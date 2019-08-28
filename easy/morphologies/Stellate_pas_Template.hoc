@@ -1,0 +1,12 @@
+/* -----------------------------------------------------------------------------
+Stellate_Template.hoc
+----------------------------------------------------------------------------- */
+begintemplate Stellate_pas_Template
+public init, soma         
+public all
+objref all
+proc init() {
+	all = new SectionList()
+}
+create soma[1]
+endtemplate Stellate_pas_Template

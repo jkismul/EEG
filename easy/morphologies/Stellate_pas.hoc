@@ -1,0 +1,32 @@
+/* ----------------------------------------------------
+example_morphology.hoc
+
+This hoc file creates a neuron of the following shape:
+
+             O
+                
+Note the conventions:
+ - soma needs to be a list (soma[0], not soma),
+ - use soma for the soma compartment,
+ - use a name starting with dend for the dendrites.
+-----------------------------------------------------*/
+objref all
+all = new SectionList()
+// Create sections:
+create soma[1]
+
+// Add 3D information:
+soma[0] {
+    pt3dadd(0, 0, -15, 30)
+    pt3dadd(0, 0, 15, 30)
+}
+
+// Set biophysical parameters:
+soma {
+    insert pas
+    g_pas = 0.0002
+    e_pas = -65.
+    Ra = 100.
+    cm = 1.
+    all.append()
+}
