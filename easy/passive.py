@@ -237,13 +237,15 @@ if __name__ == '__main__':
 
     # instantiate Network:
     network = Network(**networkParameters)
-
+    # print("Aaaaaaaaaaaa", f.items())
     syns = []
     for x in f.items():
+
         nm = str(x[0])
         a = f[nm][()]
         syns.append(a)
-
+    # print(syns)
+    # print(SPIKES['times'])
     # create E and I populations:
     for ii, (name, size) in enumerate(zip(population_names, population_sizes)):
         if RANK == 0:
@@ -251,21 +253,25 @@ if __name__ == '__main__':
         network.create_population(name=name, POP_SIZE=size,
                                   **populationParameters[ii])
         #initial train and all spikes
-        if name =='E':
+        if name =='E': #Receiving cell is excitatory
             for j,cell in enumerate(network.populations[name].cells):
                 if j%4==0:
+
+                    weighttrain = np.random.normal(0.05,0.02)
                     idx = cell.get_rand_idx_area_norm(section='dend', nidx=1)
                     for i in idx:
                         syn = Synapse(cell=cell, idx=i, syntype='Exp2Syn',
                                       weight=weighttrain,
                                       **dict(synapseParameters[0][0]))
                         syn.set_spike_times(np.array([distr_t[j]]))
-                for i in range(len(syns[0])): #E:E
-                    if syns[0][i][0] == j:
+
+                for i in range(len(syns[0])): #E:E og ei
+                    if syns[0][i][0] == j: #ii første?
                         pre_gid = syns[0][i][1]
-                        ind = SPIKES['gids'][0].index(pre_gid)
+                        ind = SPIKES['gids'][0].index(pre_gid) #i her?
                         tim = SPIKES['times'][0][ind]
                         if tim.size>0:
+                            # print("EE", tim)
                             x = syns[0][i][2]
                             y = syns[0][i][3]
                             z = syns[0][i][4]
@@ -280,6 +286,7 @@ if __name__ == '__main__':
                         ind = SPIKES['gids'][1].index(pre_gid)
                         tim = SPIKES['times'][1][ind]
                         if tim.size>0:
+                            # print("IE",tim)
                             x = syns[2][i][2]
                             y = syns[2][i][3]
                             z = syns[2][i][4]
@@ -288,15 +295,17 @@ if __name__ == '__main__':
                                           weight= weightArguments[1][0]['loc'],
                                           **dict(synapseParameters[1][0]))
                             syn.set_spike_times(np.array([tim+delayArguments[1][0]['loc']]))
-                                
-        if name =='I':
+                                    
+        if name =='I': #Receiving cell is inhibitory
             for j,cell in enumerate(network.populations[name].cells):
+                j = j+population_sizes[0]
                 for i in range(len(syns[1])): #E:I
                     if syns[1][i][0] == j:
                         pre_gid = syns[1][i][1]
                         ind = SPIKES['gids'][0].index(pre_gid)
                         tim = SPIKES['times'][0][ind]
                         if tim.size>0:
+                            # print("EI",tim)
                             x = syns[1][i][2]
                             y = syns[1][i][3]
                             z = syns[1][i][4]
@@ -312,6 +321,7 @@ if __name__ == '__main__':
                         ind = SPIKES['gids'][1].index(pre_gid)
                         tim = SPIKES['times'][1][ind]
                         if tim.size>0:
+                            # print("II",tim)
                             x = syns[3][i][2]
                             y = syns[3][i][3]
                             z = syns[3][i][4]
